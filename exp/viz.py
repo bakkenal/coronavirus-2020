@@ -28,12 +28,12 @@ MIN_CASES = 1000
 confirmed = os.path.join(
     BASE_PATH, 
     'csse_covid_19_time_series',
-    'time_series_19-covid-Confirmed.csv')
+    'time_series_covid19_confirmed_global.csv')
 confirmed = data.load_csv_data(confirmed)
 features = []
 targets = []
 
-fig = plt.figure(figsize=(12, 12))
+fig = plt.figure(figsize=(15, 15))
 ax = fig.add_subplot(111)
 cm = plt.get_cmap('jet')
 NUM_COLORS = 0
