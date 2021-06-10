@@ -12,7 +12,6 @@ plt.style.use('fivethirtyeight')
 
 # bounds
 bounds = (0, [100000., 3, 1000000000.])
-p0 = np.random.exponential(size=3)
 
 # loading data
 BASE_PATH = '../COVID-19/csse_covid_19_data/'
@@ -44,11 +43,6 @@ for region in np.unique(confirmed["Country/Region"]):
 for x in range(len(features)):
     features[x] = [i for i in features[x][0] if i != 0]
 
-print("finished!")
-print(features[2])
-print("\n\n metaInfo (province, country, lat, long)")
-print(metaInfo[2])
-
 fig = plt.figure(figsize=(12, 12))
 plt.title("regressions")
 plt.xlabel("days since first case")
@@ -56,10 +50,17 @@ plt.ylabel("estimated number of cases")
 
 # running regression
 for y in range(len(features)):
+    p0 = np.random.exponential(size=3)
+    print(p0)
     country = np.array(features[y])
     x = np.array(range(len(country))) + 1
-    (a,b,c),cov = optim.curve_fit(my_logistic, x, y, bounds=bounds, p0=p0)
-    plt.plot(x, my_logistic(a, b, c, x), label=metaInfo[y][0][1])
+    while True:
+        try:
+            (a,b,c),cov = optim.curve_fit(my_logistic, x, country, bounds=bounds, p0=p0)
+            break
+        except:
+            p0 = np.random.exponential(size=3)
+    plt.plot(x, my_logistic(a, np.log(b), c, x), label=metaInfo[y][0][1])
     regressions.append([a, b, c])
 
 print(regressions[10])
@@ -67,8 +68,7 @@ print(regressions[20])
 print(regressions[30])
 print(regressions[40])
 
-plt.ylim([0, 60000])
-plt.legend(fontsize='xx-small')
+plt.ylim([0, 200000])
 
 plt.savefig("Regressions.png")
 plt.close()
